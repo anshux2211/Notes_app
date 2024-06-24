@@ -1,6 +1,7 @@
 package com.example.notes
 
 import android.app.Dialog
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notes.db.Note_Data
 import com.example.notes.db.Note_Database
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity(),Notes_Adapter.ClickListener {
     private lateinit var repo:Repo
@@ -119,6 +122,31 @@ class MainActivity : AppCompatActivity(),Notes_Adapter.ClickListener {
     }
 
     override fun deleteNote(Note: Note_Data) {
-        note_view_model.delete(Note)
+
+        val dialogClickListener =
+            DialogInterface.OnClickListener { dialog, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        note_view_model.delete(Note)
+                        Toast.makeText(this, "Successfully Deleted", Toast.LENGTH_SHORT).show()
+                    }
+
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        dialog.dismiss()
+                    }
+                }
+            }
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+
+        // on below line we are setting message for our dialog box.
+        builder.setMessage("Delete ${Note.Note_Name}")
+            .setPositiveButton("Yes", dialogClickListener)
+            .setNegativeButton("No", dialogClickListener)
+            .show()
+
+
+
+
+
     }
 }
